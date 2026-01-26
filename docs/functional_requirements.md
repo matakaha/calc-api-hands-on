@@ -1,0 +1,22 @@
+- FR-001 掛け算API（multiply）を提供する
+- FR-002 割り算API（divide）を提供する
+- FR-003 エンドポイントは `/api/multiply` と `/api/divide` とする
+- FR-004 クエリストリングで `A` と `B` を受け取る
+- FR-005 `A` と `B` は 0 以上の整数のみを処理対象とする
+- FR-006 `/api/multiply` は `A * B` を返す
+- FR-007 `/api/divide` は `A / B` の小数点以下を切り捨てて返す
+- FR-008 正常時は数字のみのプレーンテキストを返す
+- FR-009 正常時HTTPステータスコードは 200 とする
+- FR-010 異常時もHTTPステータスコードは常に 200 とする
+- FR-011 異常時は日本語の理由のみをプレーンテキストで返す
+- FR-012 `A` 未指定時の理由は「Aが指定されていません」とする
+- FR-013 `B` 未指定時の理由は「Bが指定されていません」とする
+- FR-014 `A` が不正な場合の理由は「Aが不正です」とする
+- FR-015 `B` が不正な場合の理由は「Bが不正です」とする
+- FR-016 `/api/divide` で `B=0` の理由は「Bは0にできません」とする
+- FR-017 ブラウザでURL入力し結果が表示されること
+- FR-018 `Content-Type` は `text/plain` とする
+- FR-019 `baseUrl=https://{functionapp}.azurewebsites.net` とする
+- FR-020 URL例: `{baseUrl}/api/multiply?A=2&B=3`
+- FR-021 URL例: `{baseUrl}/api/divide?A=1&B=2`
+- FR-022 例: `/api/divide?A=1&B=2` の応答本文は `0` とする
