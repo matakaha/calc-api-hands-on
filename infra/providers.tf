@@ -13,6 +13,7 @@ terraform {
     storage_account_name = "stmatakahaterra"
     container_name       = "terra001"
     key                  = "calcapi.tfstate"
+    use_azuread_auth     = true
   }
 }
 
