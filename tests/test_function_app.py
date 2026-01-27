@@ -36,7 +36,7 @@ class TestValidateParam:
     def test_valid_positive_integer(self):
         """正の整数が正しく処理されることを確認"""
         req = Mock(spec=func.HttpRequest)
-        req.params.get.return_value = "123"
+        req.params.get = Mock(return_value="123")
         value, err = _validate_param(req, "A")
         assert value == 123
         assert err is None
@@ -44,7 +44,7 @@ class TestValidateParam:
     def test_valid_zero(self):
         """0が正しく処理されることを確認"""
         req = Mock(spec=func.HttpRequest)
-        req.params.get.return_value = "0"
+        req.params.get = Mock(return_value="0")
         value, err = _validate_param(req, "A")
         assert value == 0
         assert err is None
@@ -52,7 +52,7 @@ class TestValidateParam:
     def test_missing_parameter(self):
         """パラメータが未指定の場合のエラーメッセージを確認"""
         req = Mock(spec=func.HttpRequest)
-        req.params.get.return_value = None
+        req.params.get = Mock(return_value=None)
         value, err = _validate_param(req, "A")
         assert value is None
         assert err == "Aが指定されていません"
@@ -60,7 +60,7 @@ class TestValidateParam:
     def test_invalid_string(self):
         """文字列が不正として処理されることを確認"""
         req = Mock(spec=func.HttpRequest)
-        req.params.get.return_value = "abc"
+        req.params.get = Mock(return_value="abc")
         value, err = _validate_param(req, "B")
         assert value is None
         assert err == "Bが不正です"
@@ -68,7 +68,7 @@ class TestValidateParam:
     def test_negative_integer(self):
         """負の整数が不正として処理されることを確認"""
         req = Mock(spec=func.HttpRequest)
-        req.params.get.return_value = "-1"
+        req.params.get = Mock(return_value="-1")
         value, err = _validate_param(req, "A")
         assert value is None
         assert err == "Aが不正です"
@@ -76,7 +76,7 @@ class TestValidateParam:
     def test_decimal_number(self):
         """小数点が不正として処理されることを確認"""
         req = Mock(spec=func.HttpRequest)
-        req.params.get.return_value = "1.5"
+        req.params.get = Mock(return_value="1.5")
         value, err = _validate_param(req, "B")
         assert value is None
         assert err == "Bが不正です"
