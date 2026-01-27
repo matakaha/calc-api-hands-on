@@ -59,8 +59,5 @@ resource "azurerm_function_app_flex_consumption" "func" {
   site_config {
   }
 
-  app_settings = {
-    AzureWebJobsStorage              = azurerm_storage_account.func.primary_connection_string
-    DEPLOYMENT_STORAGE_CONNECTION_STRING = azurerm_storage_account.func.primary_connection_string
-  }
+  app_settings = {}
 }

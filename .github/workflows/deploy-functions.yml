@@ -81,6 +81,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          cd src
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+
       - name: Azure Login (OIDC)
         uses: azure/login@v2
         with:
@@ -88,33 +99,9 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_DEPLOYMENT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Package function app
-        run: |
-          cd src
-          zip -r ../functionapp.zip .
-
-      - name: Deploy via Zip
-        id: zipdeploy
-        continue-on-error: true
-        run: |
-          az functionapp deployment source config-zip \
-            --resource-group rg-calc-api-matakaha \
-            --name calcapimatakaha \
-            --src functionapp.zip
-
-      - name: Sync function triggers (retry)
-        id: sync
-        run: |
-          for i in 1 2 3 4 5; do
-            echo "Sync attempt $i"
-            if az functionapp sync-function-triggers --resource-group rg-calc-api-matakaha --name calcapimatakaha; then
-              exit 0
-            fi
-            sleep 10
-          done
-          echo "Trigger sync failed after retries"
-          exit 1
-
-      - name: Fail if deploy and sync failed
-        if: steps.zipdeploy.outcome == 'failure' && steps.sync.outcome == 'failure'
-        run: exit 1
+      - name: Deploy to Azure Functions
+        uses: Azure/functions-action@v1
+        with:
+          app-name: calcapimatakaha
+          package: src
+          respect-funcignore: true
