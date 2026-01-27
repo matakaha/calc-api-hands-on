@@ -44,6 +44,13 @@ resource "azurerm_linux_function_app" "func" {
     identity_ids = [azurerm_user_assigned_identity.func.id]
   }
 
+  function_app_config {
+    runtime {
+      name    = "python"
+      version = "3.11"
+    }
+  }
+
   site_config {
     application_stack {
       python_version = "3.11"
