@@ -99,3 +99,15 @@ jobs:
             --resource-group rg-calc-api-matakaha \
             --name calcapimatakaha \
             --src functionapp.zip
+
+      - name: Sync function triggers (retry)
+        run: |
+          for i in 1 2 3 4 5; do
+            echo "Sync attempt $i"
+            if az functionapp sync-function-triggers --resource-group rg-calc-api-matakaha --name calcapimatakaha; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Trigger sync failed after retries"
+          exit 1
