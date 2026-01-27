@@ -94,6 +94,8 @@ jobs:
           zip -r ../functionapp.zip .
 
       - name: Deploy via Zip
+        id: zipdeploy
+        continue-on-error: true
         run: |
           az functionapp deployment source config-zip \
             --resource-group rg-calc-api-matakaha \
@@ -101,6 +103,7 @@ jobs:
             --src functionapp.zip
 
       - name: Sync function triggers (retry)
+        id: sync
         run: |
           for i in 1 2 3 4 5; do
             echo "Sync attempt $i"
@@ -111,3 +114,7 @@ jobs:
           done
           echo "Trigger sync failed after retries"
           exit 1
+
+      - name: Fail if deploy and sync failed
+        if: steps.zipdeploy.outcome == 'failure' && steps.sync.outcome == 'failure'
+        run: exit 1
