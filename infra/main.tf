@@ -20,11 +20,6 @@ resource "azurerm_storage_account" "func" {
   shared_access_key_enabled       = true
 }
 
-resource "azurerm_role_assignment" "func_storage_blob_owner" {
-  scope                = azurerm_storage_account.func.id
-  role_definition_name = "Storage Blob Data Owner"
-  principal_id         = azurerm_user_assigned_identity.func.principal_id
-}
 
 resource "azurerm_service_plan" "func" {
   name                = "asp-${var.function_app_name}"
@@ -64,7 +59,4 @@ resource "azurerm_linux_function_app" "func" {
     WEBSITE_RUN_FROM_PACKAGE           = "1"
   }
 
-  depends_on = [
-    azurerm_role_assignment.func_storage_blob_owner
-  ]
 }
