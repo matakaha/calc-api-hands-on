@@ -13,7 +13,7 @@ variable "function_app_name" {
 variable "resource_group_name" {
   type        = string
   description = "Resource group name"
-  default     = "rg-calcapimatakaha"
+  default     = "rg-calc-api-matakaha"
 }
 
 variable "storage_account_name" {
