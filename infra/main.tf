@@ -59,4 +59,9 @@ resource "azurerm_function_app_flex_consumption" "func" {
   site_config {
   }
 
+  app_settings = {
+    FUNCTIONS_WORKER_RUNTIME   = "python"
+    FUNCTIONS_EXTENSION_VERSION = "~4"
+  }
+
 }
