@@ -58,4 +58,6 @@ resource "azurerm_function_app_flex_consumption" "func" {
 
   site_config {
   }
+
+  app_settings = {}
 }
