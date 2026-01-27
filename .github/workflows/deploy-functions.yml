@@ -95,7 +95,8 @@ jobs:
 
       - name: Deploy via Zip
         run: |
-          az functionapp deployment source config-zip \
+          az functionapp deploy \
             --resource-group rg-calc-api-matakaha \
             --name calcapimatakaha \
-            --src functionapp.zip
+            --src-path functionapp.zip \
+            --type zip
