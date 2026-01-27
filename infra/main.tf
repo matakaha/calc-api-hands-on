@@ -20,6 +20,12 @@ resource "azurerm_storage_account" "func" {
   shared_access_key_enabled       = true
 }
 
+resource "azurerm_storage_container" "func" {
+  name                  = "func-content"
+  storage_account_id    = azurerm_storage_account.func.id
+  container_access_type = "private"
+}
+
 
 resource "azurerm_service_plan" "func" {
   name                = "asp-${var.function_app_name}"
@@ -30,39 +36,30 @@ resource "azurerm_service_plan" "func" {
   sku_name = "FC1"
 }
 
-resource "azurerm_linux_function_app" "func" {
+resource "azurerm_function_app_flex_consumption" "func" {
   name                = var.function_app_name
-  location            = data.azurerm_resource_group.main.location
   resource_group_name = data.azurerm_resource_group.main.name
+  location            = data.azurerm_resource_group.main.location
 
-  service_plan_id            = azurerm_service_plan.func.id
-  storage_account_name       = azurerm_storage_account.func.name
-  storage_uses_managed_identity = true
+  service_plan_id = azurerm_service_plan.func.id
+
+  storage_container_type      = "blobContainer"
+  storage_container_endpoint  = "${azurerm_storage_account.func.primary_blob_endpoint}${azurerm_storage_container.func.name}"
+  storage_authentication_type = "UserAssignedIdentity"
+  storage_user_assigned_identity_id = azurerm_user_assigned_identity.func.id
+
+  runtime_name    = "python"
+  runtime_version = "3.11"
 
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.func.id]
   }
 
-  function_app_config {
-    runtime {
-      name    = "python"
-      version = "3.11"
-    }
-  }
-
   site_config {
-    application_stack {
-      python_version = "3.11"
-    }
   }
 
   app_settings = {
-    FUNCTIONS_WORKER_RUNTIME           = "python"
-    FUNCTIONS_EXTENSION_VERSION        = "~4"
-    AzureWebJobsStorage__accountName   = azurerm_storage_account.func.name
-    AzureWebJobsStorage__credential    = "managedidentity"
-    AzureWebJobsStorage__clientId      = azurerm_user_assigned_identity.func.client_id
     WEBSITE_RUN_FROM_PACKAGE           = "1"
   }
 
