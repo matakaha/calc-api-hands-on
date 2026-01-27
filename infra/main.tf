@@ -26,6 +26,12 @@ resource "azurerm_storage_container" "func" {
   container_access_type = "private"
 }
 
+resource "azurerm_role_assignment" "func_storage_blob_contributor" {
+  scope                = azurerm_storage_account.func.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_user_assigned_identity.func.principal_id
+}
+
 
 resource "azurerm_service_plan" "func" {
   name                = "asp-${var.function_app_name}"
@@ -57,5 +63,10 @@ resource "azurerm_function_app_flex_consumption" "func" {
   }
 
   site_config {
+  }
+
+  app_settings = {
+    AzureWebJobsStorage              = azurerm_storage_account.func.primary_connection_string
+    DEPLOYMENT_STORAGE_CONNECTION_STRING = azurerm_storage_account.func.primary_connection_string
   }
 }
