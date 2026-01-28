@@ -21,7 +21,7 @@ def _validate_param(req: func.HttpRequest, name: str):
 
 
 @app.function_name(name="multiply")
-@app.route(route="multiply", methods=["GET"])
+@app.route(route="multiply", methods=["GET"], auth_level=func.AuthLevel.ANONYMOUS)
 def multiply(req: func.HttpRequest) -> func.HttpResponse:
     a, err = _validate_param(req, "A")
     if err:
@@ -35,7 +35,7 @@ def multiply(req: func.HttpRequest) -> func.HttpResponse:
 
 
 @app.function_name(name="divide")
-@app.route(route="divide", methods=["GET"])
+@app.route(route="divide", methods=["GET"], auth_level=func.AuthLevel.ANONYMOUS)
 def divide(req: func.HttpRequest) -> func.HttpResponse:
     a, err = _validate_param(req, "A")
     if err:
